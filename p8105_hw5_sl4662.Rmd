@@ -126,3 +126,28 @@ study_data %>%
 
 ```
 
+# Problem 3
+
+```{r}
+sim_regression = function(n = 30, beta0 = 2, beta1) {
+  
+  sim_data = tibble(
+    x = rnorm(n, mean = 1, sd = 1),
+    y = beta0 + beta1 * x + rnorm(n, 0, 50)
+  )
+  
+  ls_fit = lm(y ~ x, data = sim_data) 
+  
+  tibble(
+    beta1_hat = coef(ls_fit)[2]
+  )
+}
+
+
+sim_results = 
+  rerun(10000, sim_regression(30, 2, 0)) %>% 
+  bind_rows()
+
+
+```
+
