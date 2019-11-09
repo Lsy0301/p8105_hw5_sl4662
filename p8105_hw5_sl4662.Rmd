@@ -101,9 +101,28 @@ for (i in 1:20) {
 
 output = map_df(.x = a, ~ read_data(.x))
 
-output = map_df(a, read_data)
+study_data = map_df(a, read_data)
+
+study_data =
+  pivot_longer(
+    study_data, 
+    week_1:week_8, 
+    names_to = "week_number", 
+    values_to = "data"
+  ) %>% 
+  mutate(id = subject) %>% 
+  separate(subject, into = c("case", "subject"), sep="_") %>% 
+  select(-subject)
 
 
+study_data %>%
+  ggplot(aes(x = week_number, y = data, color = case)) + 
+    geom_line(aes(group = id)) + 
+    labs(
+    color = "Subject",
+    title = "Control vs Experiment Weekly Data",
+    x = "Week Number",
+    y = "Experimental Data")
 
 ```
 
