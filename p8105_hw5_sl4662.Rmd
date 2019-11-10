@@ -113,6 +113,8 @@ study_data %>%
 
 ```
 
+As shown in the plot, the yellow lines represent the expermental group, while purple lines are the controls. The control group has a steady trend over 8 week. And experimental group has an increasing trend in all subjects comparing to the controls. 
+
 # Problem 3
 
 ```{r}
