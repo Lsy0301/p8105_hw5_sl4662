@@ -51,28 +51,15 @@ fill_in = function(x) {
   else if (is.numeric(x)){
     omitted = na.omit(x)
     mean_x = mean(omitted)
-    x = replace(x, is.na(x), mean_x)
+    x = round(replace(x, is.na(x), mean_x),2)
   }
 }
 
-
-output = vector("list", length = 5)
-
-for (i in 1:5) {
-  output[[i]] = fill_in(iris_with_missing[[i]])
-  
-}
 
 output = map_df(iris_with_missing, fill_in)
 
 output = map_df(.x = iris_with_missing, ~ fill_in(.x))
 
-sl = 
-  iris_with_missing %>% 
-  select(sepal_length) %>% 
-  drop_na() 
-
-mean(sl[["sepal_length"]])
 
 ```
 
@@ -168,8 +155,12 @@ sim_results %>%
   labs(
     title = "Proportion of Times the Null was Rejected",
     x = "True Beta one",
-    y = "Proportion of p-value Rejected")
+    y = "Power")
+```
 
+When effect size increases, power also increase. When β1 is zero, probability of rejection is 0.05, which is our alpha. 
+
+```{r}
 total = 
   sim_results %>% 
   group_by(beta1_input) %>% 
@@ -183,16 +174,25 @@ rejected =
   summarise(mean_beta1_hat = mean(beta1_hat)) %>% 
   mutate(category = "rejected")
   
-plot = 
-  rbind(total,rejected) %>% 
-  ggplot(aes(x = beta1_input, y = mean_beta1_hat, color = category)) +
-  geom_point(aes(group = category)) +
-  geom_line(aes(group = category))+
-  theme(legend.position = "none") +
-  labs(
-    title = "Proportion of Times the Null was Rejected",
-    x = "True Beta one",
-    y = "Proportion of p-value Rejected")
+
+rbind(total,rejected) %>% 
+ggplot(aes(x = beta1_input, y = mean_beta1_hat, color = category)) +
+geom_point(aes(group = category)) +
+geom_line(aes(group = category))+
+labs(
+  title = "Proportion of Times the Null was Rejected",
+  x = " True Value of β1",
+  y = "Average Estimate of β̂1")
 
 ```
+
+0 is a special case here, the average is very close to the true value. We are looking at our alpha value in this case. 
+
+When true effect size is small, total average and rejection average are quite different. The rejection estimated average is from those who are far away from 0 by chance. 
+
+As effect size gets bigger, total average and rejection average are similar. The power to reject increases, as effect size gets bigger, so does the probability of rejecting the null. Therefore, it is more likely to reject when effect size gets larger.
+
+
+
+
 
